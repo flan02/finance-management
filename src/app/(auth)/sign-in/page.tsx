@@ -1,10 +1,13 @@
-import React from 'react'
+import AuthForm from "@/components/reutilizable/AuthForm"
+
 
 type Props = {}
 
 const SignIn = (props: Props) => {
   return (
-    <div>SignIn</div>
+    <section className="flex-center size-full max-w-sm px-6">
+      <AuthForm type='sign-in' />
+    </section>
   )
 }
 
