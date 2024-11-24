@@ -14,7 +14,7 @@ type Props = {
 
 const MenuLinks = ({ isMobile, className }: Props) => {
   const pathName = usePathname()
-  console.log(isMobile);
+  //console.log(isMobile);
   return (
     <nav className='flex flex-col gap-4'>
       <Link href='/' className={`${isMobile ? 'gap-1 px-4' : 'mb-12 gap-2'} cursor-pointer flex items-center`}>

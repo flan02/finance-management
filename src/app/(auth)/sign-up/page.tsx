@@ -5,7 +5,7 @@ type Props = {}
 
 const SignUp = (props: Props) => {
   return (
-    <section className="flex-center size-full max-w-sm px-6">
+    <section className="flex-center size-full max-w-xl mx-auto px-6">
       <AuthForm type='sign-up' />
     </section>
   )

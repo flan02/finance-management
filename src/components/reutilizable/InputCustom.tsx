@@ -1,16 +1,19 @@
 import { Control, FieldPath } from "react-hook-form"
 import { FormControl, FormField, FormItem, FormLabel, FormMessage } from "../ui/form"
 import { Input } from "../ui/input"
-import { formSchema } from "@/zod/schema"
+import { authFormSchema } from "@/zod/schema"
 import { z } from "zod"
 
+const formSchema = authFormSchema('sign-up')
+
 type FormSchema = z.infer<typeof formSchema> // ! The actual form is authFormSchema, we will add later.
-type SelectedField = Pick<FormSchema, 'email' | 'password'>
-type SelectedFieldPaths = FieldPath<SelectedField> // * We create one single source of truth for the form schema
+
+// type SelectedField = Pick<FormSchema, 'email' | 'password'>
+// type SelectedFieldPaths = FieldPath<SelectedField> // * We create one single source of truth for the form schema
 
 interface InputProps {
   control: Control<FormSchema>
-  name: SelectedFieldPaths
+  name: FieldPath<FormSchema> // SelectedFieldPaths
   label: string
   placeholder: string
 }
@@ -22,10 +25,11 @@ const InputCustom = ({ control, name, label, placeholder }: InputProps) => {
       control={control}
       name={name}
       render={({ field }) => (
-        <FormItem>
+        <FormItem className="">
           <FormLabel>{label}</FormLabel>
           <FormControl>
             <Input
+              autoComplete={name === 'password' ? 'new-password' : 'new-username'}
               type={name === 'password' ? 'password' : 'text'}
               className='input-class'
               placeholder={placeholder} {...field} />
