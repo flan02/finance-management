@@ -6,7 +6,7 @@ type Props = {
 }
 
 interface FormFields {
-  name: "firstName" | "lastName" | "address1" | "state" | "postalCode" | "dateOfBirth" | "ssn";
+  name: "firstName" | "lastName" | "address1" | "city" | "state" | "postalCode" | "dateOfBirth" | "ssn";
   label: string;
   placeholder: string
 }
@@ -26,6 +26,11 @@ const formFields: Array<FormFields> = [
     name: 'address1',
     label: 'Address',
     placeholder: 'Enter your specific address'
+  },
+  {
+    name: 'city',
+    label: 'City',
+    placeholder: 'Enter your city'
   },
   {
     name: 'state',
@@ -56,7 +61,7 @@ const SignupForm = ({ control }: Props) => {
         formFields.map((field, index) => {
           if (index % 2 === 0) {
             return (
-              <div key={`group-${index}`} className='flex gap-4 max-w-full'>
+              <div key={`group-${index}`} className='flex gap-6 max-w-full'>
                 <InputCustom
                   key={index}
                   control={control}

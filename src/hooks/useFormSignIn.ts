@@ -1,11 +1,15 @@
+'use client'
+import { signIn, signUp } from "@/server/actions"
 import { authFormSchema } from "@/zod/schema"
 import { zodResolver } from "@hookform/resolvers/zod"
+import { useRouter } from "next/navigation"
 import { useForm } from "react-hook-form"
 import { z } from "zod"
 
 
 
-const useFormSignIn = (type: string) => {
+const useFormSignIn = (type: string, setUser: any) => {
+  const router = useRouter()
   const formType = type
   const formSchema = authFormSchema(formType)
   // Define your form
@@ -31,16 +35,32 @@ const useFormSignIn = (type: string) => {
     defaultValues: dfltValues
   })
 
-  //let { isLoading, isSubmitting } = form.formState
+  // let { isLoading, isSubmitting, isSubmitted } = form.formState
 
   //Define a submit handler
-  function onSubmit(values: z.infer<typeof formSchema>) {
-    // Do something with the form values
-    // This will be type-safe and validated.
-    //console.log(isLoading, isSubmitting);
-    console.log(values)
+  async function onSubmit(data: z.infer<typeof formSchema>) {
+    //console.log(isLoading, isSubmitting, isSubmitted);
+    //console.log(values)
+    try {
+      // Sign up with Appwrite & create plaid token
+
+      if (type === 'sign-up') {
+        const newUser = await signUp(data)
+        setUser(newUser)
+      }
+      if (type === 'sign-in') {
+        const response = await signIn({
+          email: data.email,
+          password: data.password
+        })
+        if (response) router.push('/')
+      }
+
+    } catch (error) {
+      console.error(error)
+    }
   }
-  return { form, onSubmit }
+  return { form, onSubmit, setUser }
 }
 
 export default useFormSignIn

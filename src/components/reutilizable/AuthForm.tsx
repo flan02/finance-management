@@ -17,10 +17,9 @@ type Props = {
 const AuthForm = ({ type }: Props) => {
   const [user, setUser] = useState(null)
 
-  const { form, onSubmit } = useFormSignIn(type)
+  const { form, onSubmit } = useFormSignIn(type, setUser)
   let { isLoading, isSubmitting, isSubmitted } = form.formState
   //isLoading = true // ? Uncomment this line to see the loader
-
   //const formSchema = authFormSchema('sign-up')
 
   return (
@@ -60,7 +59,7 @@ const AuthForm = ({ type }: Props) => {
           <>
             <Form {...form} >
               <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4 min-w-[350px] w-[450px] lg:w-[600px]">
-                <div className={`${type == 'sign-up' ? 'grid place-content-center' : 'w-[420px] mx-auto px-4'}`}>
+                <div className={`${type == 'sign-up' ? 'grid place-content-center space-y-4' : 'w-[420px] mx-auto px-4'}`}>
                   {type === 'sign-up' && <SignupForm control={form.control} />}
                   <InputCustom control={form.control} name="email" label="Email" placeholder="Enter your email" />
                   <InputCustom control={form.control} name="password" label="Password" placeholder="******" />
