@@ -29,7 +29,7 @@ const BankCard = ({ account, userName, showBalance }: CreditCardProps) => {
             </div>
             <p className="text-14 font-semibold tracking-[1.1px] text-white">
               ●●●● ●●●● ●●●●
-              <span className="text-16">1234</span>
+              <span className="text-16"> 1234</span>
             </p>
           </article>
         </div>
