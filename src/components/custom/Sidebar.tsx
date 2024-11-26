@@ -1,15 +1,13 @@
 
 import MenuLinks from '../reutilizable/MenuLinks'
-
-
-type Props = {}
+import Footer from './Footer'
 
 const Sidebar = ({ user }: SiderbarProps) => {
 
   return (
     <section className='sidebar'>
-      <MenuLinks isMobile={false} />
-      FOOTER
+      <MenuLinks isMobile={false} user={user} />
+      <Footer user={user} type='desktop' />
     </section>
   )
 }

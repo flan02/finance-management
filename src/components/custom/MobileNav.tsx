@@ -7,8 +7,8 @@ import {
   SheetTrigger,
 } from "@/components/ui/sheet"
 import Image from "next/image"
-import Link from "next/link"
 import MenuLinks from "../reutilizable/MenuLinks"
+
 
 
 type Props = {}
@@ -24,9 +24,11 @@ const MobileNav = ({ user }: MobileNavProps) => {
           <SheetTitle></SheetTitle>
           <SheetDescription>
           </SheetDescription>
-          <MenuLinks isMobile={true} />
+          <MenuLinks isMobile={true} user={user} />
         </SheetContent>
       </Sheet>
+
+
 
     </section>
   )

@@ -10,6 +10,7 @@ import { Loader2 } from 'lucide-react'
 import SignupForm from '../custom/SignupForm'
 
 
+
 type Props = {
   type: string
 }

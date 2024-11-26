@@ -10,16 +10,14 @@ import { z } from "zod"
 
 const useFormSignIn = (type: string, setUser: any) => {
   const router = useRouter()
-  const formType = type
-  const formSchema = authFormSchema(formType)
+  //const formType = type
+  let formSchema = authFormSchema(type)
   // Define your form
 
   const dfltValues = type === 'sign-in' ? {
     email: '',
     password: ''
   } : {
-    email: '',
-    password: '',
     firstName: '',
     lastName: '',
     address1: '',
@@ -27,7 +25,9 @@ const useFormSignIn = (type: string, setUser: any) => {
     state: '',
     postalCode: '',
     dateOfBirth: '',
-    ssn: ''
+    ssn: '',
+    email: '',
+    password: ''
   }
 
   const form = useForm<z.infer<typeof formSchema>>({
@@ -37,10 +37,10 @@ const useFormSignIn = (type: string, setUser: any) => {
 
   // let { isLoading, isSubmitting, isSubmitted } = form.formState
 
-  //Define a submit handler
+  // ? Define a submit handler
   async function onSubmit(data: z.infer<typeof formSchema>) {
     //console.log(isLoading, isSubmitting, isSubmitted);
-    //console.log(values)
+    console.log(data)
     try {
       // Sign up with Appwrite & create plaid token
 
@@ -48,12 +48,16 @@ const useFormSignIn = (type: string, setUser: any) => {
         const newUser = await signUp(data)
         setUser(newUser)
       }
+
       if (type === 'sign-in') {
-        const response = await signIn({
+        const userData = {
           email: data.email,
           password: data.password
-        })
-        if (response) router.push('/')
+        }
+        const response = await signIn(userData) as unknown as User
+        console.log('CURRENT RESPONSE', response)
+        router.push('/')
+
       }
 
     } catch (error) {
