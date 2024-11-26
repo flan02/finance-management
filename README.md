@@ -18,7 +18,9 @@ Dashboard designed to show our preferred finance flow.
 
 [here](https://sentry.io/welcome/?utm_source=google&utm_medium=cpc&utm_id={20403208976}&utm_campaign=Google_Search_Brand_SentryKW_ROW_Alpha&utm_content=g&utm_term=sentry)
 
-**Sentry is an open-source platform, enterprise level, for workflow automation.**
+**Sentry is an open-source platform, enterprise level, for workflow automation. Also it is an application monitoring software.**
+
+_For banking apps we especially leverage session replay features. This feature watching replays of real user sessions in Sentry._
 
 ## Plaid
 
