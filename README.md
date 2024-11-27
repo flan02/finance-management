@@ -4,11 +4,11 @@ Dashboard designed to show our preferred finance flow.
 
 ## Chart.js
 
-[here](https://www.chartjs.org/)
+[website](https://www.chartjs.org/)
 
 ## App Write
 
-[here](https://appwrite.io/)
+[website](https://appwrite.io/)
 
 [docs](https://appwrite.io/docs)
 
@@ -16,7 +16,7 @@ Dashboard designed to show our preferred finance flow.
 
 ## Sentry
 
-[here](https://sentry.io/welcome/?utm_source=google&utm_medium=cpc&utm_id={20403208976}&utm_campaign=Google_Search_Brand_SentryKW_ROW_Alpha&utm_content=g&utm_term=sentry)
+[website](https://sentry.io/welcome/?utm_source=google&utm_medium=cpc&utm_id={20403208976}&utm_campaign=Google_Search_Brand_SentryKW_ROW_Alpha&utm_content=g&utm_term=sentry)
 
 **Sentry is an open-source platform, enterprise level, for workflow automation. Also it is an application monitoring software.**
 
@@ -24,11 +24,15 @@ _For banking apps we especially leverage session replay features. This feature w
 
 ## Plaid
 
-[here](https://plaid.com/)
+[website](https://plaid.com/)
 
 **Plaid is a technology company that builds infrastructure for financial services.**
 
+_It gives us a simple way to connect our apps to thousands of different. Additionally guarantees the data we send between the app and the bank is secured. So devs don't have to handle the sentitive stuff._
+
 Use Dwolla with Plaid Auth to send and receive payments
+
+---
 
 ### Server actions
 
