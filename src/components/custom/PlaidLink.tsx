@@ -4,6 +4,7 @@ import { useCallback, useEffect, useState } from "react"
 import { Button } from "../ui/button"
 import { PlaidLinkOnSuccess, PlaidLinkOptions, usePlaidLink } from "react-plaid-link"
 import { useRouter } from "next/navigation"
+import { createLinkToken, exchangePublicToken } from "@/server/actions"
 //import { StyledString } from "next/dist/build/swc"
 
 
@@ -15,21 +16,19 @@ const PlaidLink = ({ user, variant }: PlaidLinkProps) => {
   useEffect(
     () => {
       const getLinkToken = async () => { // * SERVER ACTION
-        // const data = await createLinkToken(user) 
-        // setToken(data?.linkToken)
+        const data = await createLinkToken(user)
+        setToken(data?.linkToken)
       }
       getLinkToken()
     },
-    []
+    [user]
   )
 
   // ? It helps us to avoid recalling the function every time the component re-renders
   const onSuccess = useCallback<PlaidLinkOnSuccess>(
     async (public_token: string) => {
-      // await exchangePublicToken({ // * SERVER ACTION
-      //  publicToken: public_token,
-      //  user
-      // }) 
+      // * SERVER ACTION
+      await exchangePublicToken({ publicToken: public_token, user })
       router.push('/')
     },
     [user]
