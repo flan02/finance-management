@@ -1,5 +1,5 @@
 'use client'
-import { logoutAccount } from "@/server/actions"
+import { logoutAccount } from "@/server/user.actions"
 
 import Image from "next/image"
 import { useRouter } from "next/navigation"

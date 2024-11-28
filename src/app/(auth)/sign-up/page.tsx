@@ -1,5 +1,5 @@
 import AuthForm from "@/components/reutilizable/AuthForm"
-import { getLoggedInUser } from "@/server/actions"
+import { getLoggedInUser } from "@/server/user.actions"
 
 
 type Props = {}

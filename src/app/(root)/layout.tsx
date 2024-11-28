@@ -2,7 +2,7 @@
 
 import MobileNav from "@/components/custom/MobileNav";
 import Sidebar from "@/components/custom/Sidebar";
-import { getLoggedInUser } from "@/server/actions";
+import { getLoggedInUser } from "@/server/user.actions";
 import Image from "next/image";
 import { redirect } from "next/navigation";
 

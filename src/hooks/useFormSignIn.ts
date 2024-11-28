@@ -1,5 +1,5 @@
 'use client'
-import { signIn, signUp } from "@/server/actions"
+import { signIn, signUp } from "@/server/user.actions"
 import { authFormSchema } from "@/zod/schema"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useRouter } from "next/navigation"
@@ -40,12 +40,24 @@ const useFormSignIn = (type: string, setUser: any) => {
   // ? Define a submit handler
   async function onSubmit(data: z.infer<typeof formSchema>) {
     //console.log(isLoading, isSubmitting, isSubmitted);
-    console.log(data)
+    // console.log(data)
     try {
       // Sign up with Appwrite & create plaid token
+      const userData = {
+        firstName: data.firstName!,
+        lastName: data.lastName!,
+        address1: data.address1!,
+        city: data.city!,
+        state: data.state!,
+        postalCode: data.postalCode!,
+        dateOfBirth: data.dateOfBirth!,
+        ssn: data.ssn!,
+        email: data.email,
+        password: data.password
+      }
 
       if (type === 'sign-up') {
-        const newUser = await signUp(data)
+        const newUser = await signUp(userData)
         setUser(newUser)
       }
 

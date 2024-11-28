@@ -4,7 +4,7 @@ import { useCallback, useEffect, useState } from "react"
 import { Button } from "../ui/button"
 import { PlaidLinkOnSuccess, PlaidLinkOptions, usePlaidLink } from "react-plaid-link"
 import { useRouter } from "next/navigation"
-import { createLinkToken, exchangePublicToken } from "@/server/actions"
+import { createLinkToken, exchangePublicToken } from "@/server/user.actions"
 //import { StyledString } from "next/dist/build/swc"
 
 

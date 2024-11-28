@@ -1,7 +1,7 @@
 import HeaderBox from "@/components/custom/HeaderBox";
 import RightSidebar from "@/components/custom/RightSidebar";
 import TotalBalanceBox from "@/components/custom/TotalBalanceBox";
-import { getLoggedInUser } from "@/server/actions";
+import { getLoggedInUser } from "@/server/user.actions";
 
 export default async function Home() {
   // const loggedIn = { firstName: 'Dan', lastName: 'Chanivet', email: 'chanivetdan@hotmail.com' };

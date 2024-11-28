@@ -9,14 +9,16 @@ declare type SearchParamProps = {
 
 
 declare type SignUpParams = {
-  firstName?: string;
-  lastName?: string;
-  address1?: string;
-  city?: string;
-  state?: string;
-  postalCode?: string;
-  dateOfBirth?: string;
-  ssn?: string;
+  // At start all these fields were optional (?)
+  firstName: string;
+  lastName: string;
+  address1: string;
+  city: string;
+  state: string;
+  postalCode: string;
+  dateOfBirth: string;
+  ssn: string;
+  // always required
   email: string;
   password: string;
 };

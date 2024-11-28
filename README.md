@@ -30,9 +30,17 @@ _For banking apps we especially leverage session replay features. This feature w
 
 _It gives us a simple way to connect our apps to thousands of different. Additionally guarantees the data we send between the app and the bank is secured. So devs don't have to handle the sentitive stuff._
 
-Use Dwolla with Plaid Auth to send and receive payments
+Use `Dwolla` with Plaid Auth to send and receive payments
+
+**Dwolla is a payment processor that allows you to send and receive payments. It is a payment platform that securely connects to bank accounts and allows you to move money.**
+
+[dwolla website](https://www.dwolla.com/)
+
+[dwolla docs](https://developers.dwolla.com/docs)
 
 ---
+
+* Plaid shares the data between those transactions and Dwolla actually makes that happen (Processes the payment).
 
 ### Server actions
 

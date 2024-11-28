@@ -3,10 +3,12 @@
 import { ID, Query } from "node-appwrite";
 import { cookies } from "next/headers";
 import { createAdminClient, createSessionClient } from "./appwrite";
-import { encryptId, parseStringify } from "@/lib/utils";
+import { encryptId, extractCustomerIdFromUrl, parseStringify } from "@/lib/utils";
 import { CountryCode, ProcessorTokenCreateRequest, ProcessorTokenCreateRequestProcessorEnum, Products } from "plaid";
 import { plaidClient } from "@/lib/plaid";
 import { revalidatePath } from "next/cache";
+import { addFundingSource, createDwollaCustomer } from "./dwolla.actions";
+
 
 
 const {
@@ -54,15 +56,35 @@ export const signIn = async (userData: signInProps) => {
 }
 
 export const signUp = async (userData: SignUpParams) => {
+  const { email, password, firstName, lastName } = userData
+  const name = `${firstName} ${lastName}`
+  const id = ID.unique()
+
+  let newUserAccount
+
   try {
     // Create a user account
-    const { account } = await createAdminClient()
-    const newUserAccount = await account.create(
-      ID.unique(),
-      userData.email,
-      userData.password,
-      `${userData.firstName} ${userData.lastName}`
+    const { account, database } = await createAdminClient()
+
+    newUserAccount = await account.create(
+      id,
+      email,
+      password,
+      name
     )
+
+    if (!newUserAccount) throw new Error('Error creating user.')
+
+    // Create a Dwolla customer
+    const dwollaCustomerUrl = await createDwollaCustomer({ ...userData, type: 'personal' })
+
+    if (!dwollaCustomerUrl) throw new Error('Error creating Dwolla customer.')
+
+    const dwollaCustomerId = extractCustomerIdFromUrl(dwollaCustomerUrl)
+
+    // Create a user document in our database
+    let userDB = { ...userData, userId: newUserAccount.$id, dwollaCustomerId, dwollaCustomerUrl }
+    const newUser = await database.createDocument(DATABASE_ID!, USER_COLLECTION_ID!, ID.unique(), userDB)
 
     // Create a session
     const session = await account.createEmailPasswordSession(userData.email, userData.password)
@@ -76,7 +98,7 @@ export const signUp = async (userData: SignUpParams) => {
     })
 
     // ? custom fc -> JSON.parse(JSON.stringify(value))
-    return parseStringify(newUserAccount) // ! Next.js doesn't like the circular structure of the object so we need to stringify it first
+    return parseStringify(newUser) // ! Next.js doesn't like the circular structure of the object so we need to stringify it first
 
   } catch (error) {
     console.log('Error', error);
@@ -133,6 +155,32 @@ export const createLinkToken = async (user: User) => {
   }
 }
 
+export const createBankAccount = async ({ userId, bankId, accountId, accessToken, fundingSourceUrl, shareableId }: createBankAccountProps) => {
+  const userInfo = {
+    userId,
+    bankId,
+    accountId,
+    accessToken,
+    fundingSourceUrl,
+    shareableId
+  }
+
+  try {
+    const { database } = await createAdminClient()
+
+    const bankAccount = await database.createDocument(
+      DATABASE_ID!,
+      BANK_COLLECTION_ID!,
+      ID.unique(),
+      userInfo
+    )
+
+    return parseStringify(bankAccount)
+
+  } catch (error) {
+    console.error('An error occured while creating bank account: ', error);
+  }
+}
 
 export const exchangePublicToken = async ({ publicToken, user }: exchangePublicTokenProps) => {
   try {
@@ -170,7 +218,8 @@ export const exchangePublicToken = async ({ publicToken, user }: exchangePublicT
     })
 
     // * If the funding source URL is not created, throw an error
-    if (!fundingSourceUrl) throw Error;
+    //if(!fundingSourceUrl) throw new Error
+    if (fundingSourceUrl === undefined || fundingSourceUrl === null) throw new Error('Funding source URL not created');
 
     // * Create a bank account using the user ID, item ID, and account ID, access token, funding source URL, and sharable ID
     // ? custom SERVER ACTION
@@ -180,7 +229,7 @@ export const exchangePublicToken = async ({ publicToken, user }: exchangePublicT
       accountId: accountData.account_id,
       accessToken,
       fundingSourceUrl,
-      sharableId: encryptId(accountData.account_id)
+      shareableId: encryptId(accountData.account_id)
     })
 
     // * Revalidate the path to reflect the changes
