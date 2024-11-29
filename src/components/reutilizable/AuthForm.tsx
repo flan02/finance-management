@@ -54,56 +54,57 @@ const AuthForm = ({ type }: Props) => {
       </header>
 
       {/* user ? ( */}
-      <div className='flex flex-col gap-4'>
-        {/* PlaidLink */}
-        <PlaidLink user={user} variant='primary' />
-      </div>
-      {/* ) : ( */}
-      <>
-        <Form {...form} >
-          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4 min-w-[350px] w-[450px] lg:w-[600px]">
-            <div className={`${type == 'sign-up' ? 'grid place-content-center space-y-4' : 'w-[420px] mx-auto px-4'}`}>
-              {type === 'sign-up' && <SignupForm control={form.control} />}
-              <InputCustom control={form.control} name="email" label="Email" placeholder="Enter your email" />
-              <InputCustom control={form.control} name="password" label="Password" placeholder="******" />
-            </div>
+      {user ? (
+        <div className='flex flex-col gap-4'>
+          {/* PlaidLink */}
+          <PlaidLink user={user} variant='primary' />
+        </div>
+      ) : (
+        <>
+          <Form {...form} >
+            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4 min-w-[350px] w-[450px] lg:w-[600px]">
+              <div className={`${type == 'sign-up' ? 'grid place-content-center space-y-4' : 'w-[420px] mx-auto px-4'}`}>
+                {type === 'sign-up' && <SignupForm control={form.control} />}
+                <InputCustom control={form.control} name="email" label="Email" placeholder="Enter your email" />
+                <InputCustom control={form.control} name="password" label="Password" placeholder="******" />
+              </div>
 
-            <div className='w-[420px] mx-auto px-4'>
-              <Button
-                disabled={isLoading || isSubmitting || isSubmitted}
-                type="submit"
-                className='form-btn w-full'>
-                {
-                  isLoading || isSubmitting
-                    ? <>
-                      <Loader2 size={20} className='animate-spin' /> Loading...
-                    </>
-                    : type === 'sign-in' ? 'Sign In' : 'Sign Up'
-                }
-              </Button>
-            </div>
-          </form>
-        </Form>
+              <div className='w-[420px] mx-auto px-4'>
+                <Button
+                  disabled={isLoading || isSubmitting || isSubmitted}
+                  type="submit"
+                  className='form-btn w-full'>
+                  {
+                    isLoading || isSubmitting
+                      ? <>
+                        <Loader2 size={20} className='animate-spin' /> Loading...
+                      </>
+                      : type === 'sign-in' ? 'Sign In' : 'Sign Up'
+                  }
+                </Button>
+              </div>
+            </form>
+          </Form>
 
-        <footer className='flex justify-center gap-1'>
-          <p className='text-14 font-normal text-gray-600'>
-            {type === 'sign-in' ? 'Don’t have an account?' : 'Already have an account?'}
-          </p>
-          <Link
-            className='form-link'
-            href={
-              type === 'sign-in'
-                ? '/sign-up'
-                : '/sign-in'
-            }
-          >
-            {
-              type === 'sign-in' ? 'Sign Up' : 'Sign In'
-            }
-          </Link>
-        </footer>
-      </>
-      {/* )} */}
+          <footer className='flex justify-center gap-1'>
+            <p className='text-14 font-normal text-gray-600'>
+              {type === 'sign-in' ? 'Don’t have an account?' : 'Already have an account?'}
+            </p>
+            <Link
+              className='form-link'
+              href={
+                type === 'sign-in'
+                  ? '/sign-up'
+                  : '/sign-in'
+              }
+            >
+              {
+                type === 'sign-in' ? 'Sign Up' : 'Sign In'
+              }
+            </Link>
+          </footer>
+        </>
+      )}
     </section>
   )
 }

@@ -55,8 +55,8 @@ export const signIn = async (userData: signInProps) => {
   }
 }
 
-export const signUp = async (userData: SignUpParams) => {
-  const { email, password, firstName, lastName } = userData
+export const signUp = async ({ password, ...userData }: SignUpParams) => {
+  const { email, firstName, lastName } = userData // ? This way userData contains all info except password
   const name = `${firstName} ${lastName}`
   const id = ID.unique()
 
@@ -82,12 +82,17 @@ export const signUp = async (userData: SignUpParams) => {
 
     const dwollaCustomerId = extractCustomerIdFromUrl(dwollaCustomerUrl)
 
-    // Create a user document in our database
-    let userDB = { ...userData, userId: newUserAccount.$id, dwollaCustomerId, dwollaCustomerUrl }
-    const newUser = await database.createDocument(DATABASE_ID!, USER_COLLECTION_ID!, ID.unique(), userDB)
+    // ? Create a user document in our database
+    // let userDB = { ...userData, userId: newUserAccount.$id, dwollaCustomerId, dwollaCustomerUrl }
+    const newUser = await database.createDocument(
+      DATABASE_ID!,
+      USER_COLLECTION_ID!,
+      ID.unique(),
+      { ...userData, userId: newUserAccount.$id, dwollaCustomerId, dwollaCustomerUrl }
+    )
 
     // Create a session
-    const session = await account.createEmailPasswordSession(userData.email, userData.password)
+    const session = await account.createEmailPasswordSession(email, password)
 
     // Set the session cookie
     cookies().set('appwrite-session', session.secret, {
@@ -133,12 +138,13 @@ export const logoutAccount = async () => {
 
 
 export const createLinkToken = async (user: User) => {
+
   try {
     const tokenParams = {
       user: {
         client_user_id: user.$id,
       },
-      client_name: user.name,
+      client_name: `${user.firstName} ${user.lastName}`,
       products: ['auth'] as Products[],
       language: 'en',
       country_codes: ['US'] as CountryCode[],
