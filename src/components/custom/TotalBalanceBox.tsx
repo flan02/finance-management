@@ -12,7 +12,7 @@ const TotalBalanceBox = ({ accounts = [], totalBanks, totalCurrentBalance }: Tot
       </div>
       <div className='flex flex-col gap-6'>
         <h2 className='header-2'>
-          Bank Account{totalBanks > 1 ? 's' : ''}
+          Bank Account: {totalBanks > 1 ? totalBanks + 's' : totalBanks}
         </h2>
         <div className="flex flex-col gap-2">
           <p className='total-balance-label'>Total Current Balance</p>

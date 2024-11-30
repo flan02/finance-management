@@ -34,7 +34,7 @@ export const getUserInfo = async ({ userId }: getUserInfoProps) => {
 }
 
 export const signIn = async (userData: signInProps) => {
-  console.log('userData server component', userData);
+  // console.log('userData server component', userData);
   try {
     const { account } = await createAdminClient()
     const session = await account.createEmailPasswordSession(userData.email, userData.password)
@@ -46,7 +46,7 @@ export const signIn = async (userData: signInProps) => {
       secure: true
     })
 
-    console.log("CURRENT SESSION", session.userId);
+    // console.log("CURRENT SESSION", session.userId);
     const user = await getUserInfo({ userId: session.userId })
 
     return parseStringify(user)
@@ -57,8 +57,8 @@ export const signIn = async (userData: signInProps) => {
 
 export const signUp = async ({ password, ...userData }: SignUpParams) => {
   const { email, firstName, lastName } = userData // ? This way userData contains all info except password
-  const name = `${firstName} ${lastName}`
-  const id = ID.unique()
+  //const name = `${firstName} ${lastName}`
+  //const id = ID.unique()
 
   let newUserAccount
 
@@ -67,10 +67,10 @@ export const signUp = async ({ password, ...userData }: SignUpParams) => {
     const { account, database } = await createAdminClient()
 
     newUserAccount = await account.create(
-      id,
+      ID.unique(),
       email,
       password,
-      name
+      `${firstName} ${lastName}`
     )
 
     if (!newUserAccount) throw new Error('Error creating user.')
@@ -162,14 +162,6 @@ export const createLinkToken = async (user: User) => {
 }
 
 export const createBankAccount = async ({ userId, bankId, accountId, accessToken, fundingSourceUrl, shareableId }: createBankAccountProps) => {
-  const userInfo = {
-    userId,
-    bankId,
-    accountId,
-    accessToken,
-    fundingSourceUrl,
-    shareableId
-  }
 
   try {
     const { database } = await createAdminClient()
@@ -178,7 +170,14 @@ export const createBankAccount = async ({ userId, bankId, accountId, accessToken
       DATABASE_ID!,
       BANK_COLLECTION_ID!,
       ID.unique(),
-      userInfo
+      {
+        userId,
+        bankId,
+        accountId,
+        accessToken,
+        fundingSourceUrl,
+        shareableId
+      }
     )
 
     return parseStringify(bankAccount)
@@ -199,11 +198,11 @@ export const exchangePublicToken = async ({ publicToken, user }: exchangePublicT
     const itemId = response.data.item_id
 
     // * Get account info from Plaid using the access token
-    const accountResponse = await plaidClient.accountsGet({
+    const accountsResponse = await plaidClient.accountsGet({
       access_token: accessToken
     })
 
-    const accountData = accountResponse.data.accounts[0]
+    const accountData = accountsResponse.data.accounts[0]
 
     // * Create a processor token for Dwolla using the access token and account ID
     const request: ProcessorTokenCreateRequest = {
@@ -227,7 +226,7 @@ export const exchangePublicToken = async ({ publicToken, user }: exchangePublicT
     //if(!fundingSourceUrl) throw new Error
     if (fundingSourceUrl === undefined || fundingSourceUrl === null) throw new Error('Funding source URL not created');
 
-    // * Create a bank account using the user ID, item ID, and account ID, access token, funding source URL, and sharable ID
+    // * Create a bank account using the user ID, item ID, and account ID, access token, funding source URL, and shareable ID
     // ? custom SERVER ACTION
     await createBankAccount({
       userId: user.$id,
@@ -238,15 +237,66 @@ export const exchangePublicToken = async ({ publicToken, user }: exchangePublicT
       shareableId: encryptId(accountData.account_id)
     })
 
-    // * Revalidate the path to reflect the changes
+    // Revalidate the path to reflect the changes
     revalidatePath('/')
 
-    // * Return a success message
+    // Return a success message
     return parseStringify({
       publicTokenExchange: 'complete'
     })
 
   } catch (error) {
     console.error('An error occured white creating exchanging token: ', error);
+  }
+}
+
+export const getBanks = async ({ userId }: getBanksProps) => {
+  try {
+    const { database } = await createAdminClient()
+
+    const banks = await database.listDocuments(
+      DATABASE_ID!,
+      BANK_COLLECTION_ID!,
+      [Query.equal('userId', [userId])]
+    )
+
+    return parseStringify(banks.documents)
+  } catch (error) {
+    console.error("Error retrieving bank accounts", error)
+  }
+}
+
+export const getBank = async ({ documentId }: getBankProps) => {
+  try {
+    const { database } = await createAdminClient();
+
+    const bank = await database.listDocuments(
+      DATABASE_ID!,
+      BANK_COLLECTION_ID!,
+      [Query.equal('$id', [documentId])]
+    )
+
+    return parseStringify(bank.documents[0]);
+  } catch (error) {
+    console.log(error)
+  }
+}
+
+
+export const getBankByAccountId = async ({ accountId }: getBankByAccountIdProps) => {
+  try {
+    const { database } = await createAdminClient();
+
+    const bank = await database.listDocuments(
+      DATABASE_ID!,
+      BANK_COLLECTION_ID!,
+      [Query.equal('accountId', [accountId])]
+    )
+
+    if (bank.total !== 1) return null;
+
+    return parseStringify(bank.documents[0]);
+  } catch (error) {
+    console.log(error)
   }
 }

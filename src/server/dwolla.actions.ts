@@ -36,7 +36,7 @@ export const createFundingSource = async (options: CreateFundingSourceOptions) =
     return await dwollaClient.post(`customers/${options.customerId}/funding-sources`, {
       name: options.fundingSourceName,
       plaidToken: options.plaidToken
-    })
+    }).then((res: any) => res.headers.get('location'))
   } catch (error) {
     console.error("Creating an On Demand Authorization Failed: ", error)
   }
@@ -100,7 +100,7 @@ export const addFundingSource = async ({ dwollaCustomerId, processorToken, bankN
       plaidToken: processorToken,
       _links: dwollaAuthLinks
     }
-
+    return await createFundingSource(fundingSourceOptions)
   } catch (error) {
     console.error("Transfer fund failed: ", error)
   }
