@@ -33,11 +33,11 @@ export const getUserInfo = async ({ userId }: getUserInfoProps) => {
   }
 }
 
-export const signIn = async (userData: signInProps) => {
+export const signIn = async ({ email, password }: signInProps) => {
   // console.log('userData server component', userData);
   try {
     const { account } = await createAdminClient()
-    const session = await account.createEmailPasswordSession(userData.email, userData.password)
+    const session = await account.createEmailPasswordSession(email, password)
 
     cookies().set('appwrite-session', session.secret, {
       path: "/",
@@ -47,7 +47,7 @@ export const signIn = async (userData: signInProps) => {
     })
 
     // console.log("CURRENT SESSION", session.userId);
-    const user = await getUserInfo({ userId: session.userId })
+    const user = await getUserInfo({ userId: session.userId }) // ? Info got from bbdd
 
     return parseStringify(user)
   } catch (error) {
@@ -117,7 +117,10 @@ export async function getLoggedInUser() {
     const { account } = await createSessionClient()
 
     // return await account.get()
-    const user = await account.get()
+    const result = await account.get()
+
+    const user = await getUserInfo({ userId: result.$id })
+
     return parseStringify(user) // ! Next.js doesn't like the circular structure of the object so we need to stringify it first
   } catch (error) {
     console.log('Error', error);
